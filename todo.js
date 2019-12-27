@@ -1,6 +1,4 @@
 // eslint-disable no-undef 
-
-//Inline editing (data structure changed; isEditable removed)
 const util = importUtil();
         
 window.onload = () => {
@@ -246,9 +244,6 @@ class todos {
         p.addEventListener('click', (event) => { event.target.focus()});
         p.addEventListener('input', this.helpers.debounce(this.helpers.handleEdit(this.listName, index, category),1000));
         li.appendChild(p);
-        console.log(p.style.height, p.scrollHeight);
-        
-        
     }
 
     autoResize() {
