@@ -13,14 +13,5 @@ function importUtil(){
             return JSON.parse(localStorage.getItem('saved'));
         } ,
 
-        createCustomElement(tag, properties, children = []) {
-            let ele = document.createElement(tag);
-            
-            Object.assign(ele, properties);
-
-            if (children.length) children.forEach(element => ele.appendChild(element))
-            
-            return ele;
-        }
     }
 }
