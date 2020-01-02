@@ -283,7 +283,7 @@ let pane = {
     createNodePaneList(name) {
         let listButton = document.createElement('button');
         listButton.className = 'btn btn-outline-dark paneItems'; 
-        listButton.innerHTML = name;
+        listButton.innerText = name;
         this.paneList.appendChild(listButton);
         listButton.addEventListener('click', this.onSelectPaneItem(name));    
         let but = document.createElement('button');
