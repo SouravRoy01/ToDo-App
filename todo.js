@@ -1,16 +1,3 @@
-// eslint-disable no-undef 
-const util = importUtil();
-        
-window.onload = () => {
-    const savedData = util.getSavedData();
-    todoApp.init(savedData);  
-}
-
-window.onunload = () => {
-    const records = todoApp.records;
-    localStorage.setItem('saved', JSON.stringify(records));
-}
-
 let todoApp = { 
     init(data)
     {
@@ -295,3 +282,5 @@ let pane = {
         return this.paneRecords.reduce((acc, item) => ({ ...acc, [item]: this.createNodePaneList(item) }), {});
     }
 }
+
+export default todoApp;

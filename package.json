@@ -1,0 +1,26 @@
+{
+  "name": "todo",
+  "version": "1.0.0",
+  "description": "Todo App By Sourav Roy",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:dev": "webpack",
+    "start": "webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SouravRoy01/ToDo-App.git"
+  },
+  "author": "Sourav Roy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SouravRoy01/ToDo-App/issues"
+  },
+  "homepage": "https://github.com/SouravRoy01/ToDo-App#readme",
+  "dependencies": {
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1"
+  }
+}
