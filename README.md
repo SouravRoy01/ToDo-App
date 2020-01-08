@@ -1,6 +1,6 @@
 # ToDo-App
 
-release branch is the final branch for review
+release2 branch is the final branch for review
 
 todo.js contains the main code
 
