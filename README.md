@@ -1,6 +1,6 @@
 # ToDo-App
 
-release branch is the final branch for review
+release branch is the old branch for review ( without modules)
 
 todo.js contains the main code
 
