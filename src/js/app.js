@@ -4,7 +4,6 @@
 import Todos from './todos';
 import pane from './pane';
 import getDataInstance from './data';
-// const dataInstance = getDataInstance();
 
 const app = {
   init() {
