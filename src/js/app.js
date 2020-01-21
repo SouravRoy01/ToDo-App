@@ -15,7 +15,9 @@ const app = {
     this.mount(Object.keys(this.dataInstance.getData)[0]);
   },
 
-  mount(itemName, deletedItem) {
+  mount(itemNameArg, deletedItemArg) {
+    let itemName = itemNameArg;
+    const deletedItem = deletedItemArg;
     const paneNodes = this.mountPane();
     // this.handleSelectPaneItem(itemName, true)({ target: paneNodes[itemName] });
     let skipTodos = false;
