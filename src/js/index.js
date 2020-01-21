@@ -2,14 +2,16 @@
 // eslint-disable-next-line no-unused-vars
 import css from '../css/style.css';
 import util from './todoUtils';
-import todoApp from './todoApp';
+import app from './app';
+import getDataInstance from './data';
 
 window.onload = () => {
   const savedData = util.getSavedData();
-  todoApp.init(savedData);
+  getDataInstance(savedData);
+  app.init();
 };
 
 window.onunload = () => {
-  const { records } = todoApp;
+  const records = getDataInstance().getData;
   localStorage.setItem('saved', JSON.stringify(records));
 };

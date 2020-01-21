@@ -1,25 +1,32 @@
 /* eslint-disable no-undef */
-import { icon } from '@fortawesome/fontawesome-svg-core';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import getDataInstance from './data';
+import paint from './paintDOM';
 
 class Todos {
-  constructor(listName, initData, helpers) {
+  constructor(listName, onSelectPaneItem, paneNode) {
+    this.dataInstance = getDataInstance();
     this.listName = listName;
-    this.record = initData;
-    this.helpers = helpers;
+    // this.record = initData;
+    // this.record = this.records[listName];
     this.list = document.querySelector('.myList');
     this.mount = this.mount.bind(this);
     this.unmount = this.unmount.bind(this);
-    this.createNode = this.createNode.bind(this);
-    this.createText = this.createText.bind(this);
-    this.autoResize = this.autoResize.bind(this);
-    this.attachToDOM = this.attachToDOM.bind(this);
+    this.onSelectPaneItem = onSelectPaneItem;
+    this.paneNode = paneNode;
+    this.add = this.add.bind(this);
+    this.remove = this.remove.bind(this);
+    this.strike = this.strike.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+    this.createNode = paint.paintTodos.createNode.bind(this);
+    this.createText = paint.paintTodos.createText.bind(this);
+    this.autoResize = paint.paintTodos.autoResize.bind(this);
+    this.attachToDOM = paint.paintTodos.attachToDOM.bind(this);
   }
 
   mount() {
     const addButton = document.querySelector('#add');
     const taskInput = document.querySelector('.inputTask');
-    this.addEventHandler = this.helpers.add(this.listName);
+    this.addEventHandler = this.add(this.listName);
     addButton.addEventListener('click', this.addEventHandler);
     taskInput.addEventListener('keydown', this.addEventHandler);
     this.attachToDOM();
@@ -33,51 +40,76 @@ class Todos {
     return this.record;
   }
 
-  createNode(index, destItems, category) {
-    const li = document.createElement('li');
-    li.classList.add('listItem');
-    const cbox = document.createElement('input');
-    cbox.type = 'checkbox';
-    cbox.className = 'check';
-
-    if (destItems === this.record.doneItems) {
-      cbox.checked = true;
-      li.classList.add('strike');
-    }
-    cbox.addEventListener('click', this.helpers.strike(this.listName, index, category));
-    li.appendChild(cbox);
-    this.createText(destItems[index], index, category, li);
-    const del = document.createElement('button');
-    del.appendChild(icon(faTrash).node[0]);
-    // del.innerHTML = '<i class="fas fa-trash"></i>';
-    del.id = 'delete';
-    del.addEventListener('click', this.helpers.remove(this.listName, index, category));
-    li.appendChild(del);
-    return li;
+  add(itemName) {
+    return (event) => {
+      if (event.type !== 'click' && event.code !== 'Enter') return;
+      const input = document.querySelector('.inputTask').value.trim();
+      if (input === '') return;
+      const records = {
+        ...this.dataInstance.getData,
+        [itemName]: {
+          ...this.dataInstance.getData[itemName],
+          items: [input, ...this.dataInstance.getData[itemName].items],
+        },
+      };
+      document.querySelector('.inputTask').value = '';
+      this.dataInstance.setData = records;
+      this.onSelectPaneItem(itemName)({ target: this.paneNode });
+    };
   }
 
-  createText(textValue, index, category, li) {
-    const p = document.createElement('textarea');
-    p.className = 'itemText';
-    p.value = textValue;
-    p.addEventListener('click', (event) => { event.target.focus(); });
-    p.addEventListener('input', this.helpers.debounce(this.helpers.handleEdit(this.listName, index, category), 1000));
-    li.appendChild(p);
+  remove(itemName, pos, category) {
+    return () => {
+      if (category === 'items' && !confirm('Are you sure you want to delete an uncompleted task?')) return;
+
+      const records = {
+        ...this.dataInstance.getData,
+        [itemName]: {
+          ...this.dataInstance.getData[itemName],
+          [category]: this.dataInstance.getData[itemName][category]
+            .reduce((acc, item, index) => (index !== pos ? [...acc, item] : acc), []),
+        },
+      };
+      this.dataInstance.setData = records;
+      this.onSelectPaneItem(itemName)({ target: this.paneNode });
+    };
+  }
+
+  strike(itemName, pos, category) {
+    return () => {
+      const strikedItem = this.dataInstance.getData[itemName][category][pos];
+      const records = {
+        ...this.dataInstance.getData,
+        [itemName]: {
+          ...this.dataInstance.getData[itemName],
+          [category]: this.dataInstance.getData[itemName][category]
+            .reduce((acc, item, index) => (index !== pos ? [...acc, item] : acc), []),
+        },
+      };
+
+      if (category === 'items') records[itemName].doneItems = [...records[itemName].doneItems, strikedItem];
+      else records[itemName].items = [...records[itemName].items, strikedItem];
+      this.dataInstance.setData = records;
+      this.onSelectPaneItem(itemName)({ target: this.paneNode });
+    };
   }
 
   // eslint-disable-next-line class-methods-use-this
-  autoResize() {
-    const test = document.querySelectorAll('.itemText');
-    // eslint-disable-next-line no-param-reassign
-    test.forEach((item) => { item.style.height = 'auto'; item.style.height = `${item.scrollHeight}px`; });
-  }
-
-  attachToDOM() {
-    while (this.list.firstChild) this.list.removeChild(this.list.firstChild);
-    for (const itemCategory in this.record)
-      this.record[itemCategory].forEach((_, index, collection) => this.list.appendChild(this.createNode(index, collection, itemCategory)));
-
-    this.autoResize();
+  handleEdit(itemName, index, category) {
+    return (event) => {
+      const text = event.target.value.trim();
+      if (text === '') return undefined;
+      const records = {
+        ...this.dataInstance.getData,
+        [itemName]: {
+          ...this.dataInstance.getData[itemName],
+          [category]: this.dataInstance.getData[itemName][category]
+            .reduce((acc, item, pos) => (pos !== index ? [...acc, item] : [...acc, text]), []),
+        },
+      };
+      // return records;
+      this.dataInstance.setData = records || this.dataInstance.getData;
+    };
   }
 }
 

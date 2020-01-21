@@ -12,4 +12,21 @@ function getSavedData() {
   return JSON.parse(localStorage.getItem('saved'));
 }
 
-export default { getSavedData };
+function debounce(func, interval) {
+  let timeout;
+  function debouncer(...rest) {
+    const context = this;
+    const args = rest;
+    this.style.height = 'auto';
+    this.style.height = `${this.scrollHeight}px`;
+    const later = () => {
+      timeout = null;
+      func.apply(context, args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, interval);
+  }
+  return debouncer;
+}
+
+export default { getSavedData, debounce };
