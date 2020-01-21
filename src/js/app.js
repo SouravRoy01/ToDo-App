@@ -19,7 +19,6 @@ const app = {
     let itemName = itemNameArg;
     const deletedItem = deletedItemArg;
     const paneNodes = this.mountPane();
-    // this.handleSelectPaneItem(itemName, true)({ target: paneNodes[itemName] });
     let skipTodos = false;
     if (deletedItem) {
       itemName = this.currentList;
